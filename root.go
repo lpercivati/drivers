@@ -24,7 +24,7 @@ func main() {
 		var driverService = di.GetDriverService(driverRepository)
 		var driverController = di.GetDriverController(driverService)
 
-		driverServer.GET("/drivers/:id", driverController.Get)
+		driverServer.GET("/drivers", driverController.Get)
 		driverServer.POST("/drivers", driverController.Add)
 
 		driverServer.Run()

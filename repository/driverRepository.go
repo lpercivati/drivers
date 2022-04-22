@@ -25,6 +25,8 @@ func (_ *DriverRepository) Create(driver models.Driver) (models.Driver, error) {
 }
 
 func (_ *DriverRepository) GetDrivers(page int) ([]models.Driver, error) {
+	//limit := 5
+	//offset := limit * (page - 1)
 	rows, err := config.DB.Query("SELECT * FROM drivers")
 	drivers := []models.Driver{}
 
@@ -45,5 +47,6 @@ func (_ *DriverRepository) GetDrivers(page int) ([]models.Driver, error) {
 		return drivers, err
 	}
 
+	log.Println("Get driver fail", err.Error())
 	return drivers, err
 }

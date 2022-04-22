@@ -4,22 +4,30 @@ import (
 	"net/http"
 	"root/bodies"
 	"root/models"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 type DriverService interface {
 	Create(data bodies.DriverBody) (models.Driver, error)
+	GetDrivers(page int) ([]models.Driver, error)
 }
 
 type DriverController struct {
 	Service DriverService
 }
 
-func (_ *DriverController) Get(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "hello! " + c.Param("id"),
-	})
+func (this *DriverController) Get(c *gin.Context) {
+	page, _ := strconv.Atoi(c.Query("page"))
+
+	drivers, err := this.Service.GetDrivers(page)
+
+	if err == nil {
+		c.JSON(http.StatusOK, drivers)
+	} else {
+		c.JSON(http.StatusBadRequest, nil)
+	}
 }
 
 func (this *DriverController) Add(c *gin.Context) {
