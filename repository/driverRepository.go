@@ -25,9 +25,15 @@ func (_ *DriverRepository) Create(driver models.Driver) (models.Driver, error) {
 }
 
 func (_ *DriverRepository) GetDrivers(page int) ([]models.Driver, error) {
-	//limit := 5
-	//offset := limit * (page - 1)
-	rows, err := config.DB.Query("SELECT * FROM drivers")
+	limit := 5
+	offset := limit * (page - 1)
+
+	rows, err := config.DB.Query(`
+	SELECT * FROM drivers
+	ORDER BY id
+	LIMIT $1
+	OFFSET $2
+	`, limit, offset)
 	drivers := []models.Driver{}
 
 	if err == nil {
@@ -49,4 +55,34 @@ func (_ *DriverRepository) GetDrivers(page int) ([]models.Driver, error) {
 
 	log.Println("Get driver fail", err.Error())
 	return drivers, err
+}
+
+func (_ *DriverRepository) GetDriverByEmail(email string) (models.Driver, error) {
+	rows, err := config.DB.Query("SELECT * FROM drivers WHERE email = $1", email)
+	drivers := []models.Driver{}
+
+	if err == nil {
+		for rows.Next() {
+			var currentDriver models.Driver
+
+			rows.Scan(
+				&currentDriver.Id,
+				&currentDriver.Fullname,
+				&currentDriver.Email,
+				&currentDriver.PasswordHash,
+				&currentDriver.IsAdmin,
+				&currentDriver.DateCreation,
+			)
+			drivers = append(drivers, currentDriver)
+		}
+
+		if len(drivers) == 0 {
+			return models.Driver{}, nil
+		}
+
+		return drivers[0], err
+	}
+
+	log.Println("Get driver fail", err.Error())
+	return models.Driver{}, err
 }

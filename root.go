@@ -4,6 +4,7 @@ import (
 	"log"
 	"root/config"
 	"root/di"
+	"root/middlewares"
 	"root/migrations"
 
 	"github.com/gin-gonic/gin"
@@ -22,10 +23,21 @@ func main() {
 
 		var driverRepository = di.GetDriverRepository()
 		var driverService = di.GetDriverService(driverRepository)
-		var driverController = di.GetDriverController(driverService)
+		var authService = di.GetAuthService()
 
-		driverServer.GET("/drivers", driverController.Get)
-		driverServer.POST("/drivers", driverController.Add)
+		var driverController = di.GetDriverController(driverService, authService)
+		var authController = di.GetAuthController(authService, driverService)
+
+		api := driverServer.Group("/api")
+		{
+			api.POST("/token", authController.GenerateToken)
+			api.POST("/drivers", driverController.Add)
+			secured := api.Group("/secured").Use(middlewares.Auth())
+			{
+				secured.GET("/drivers", driverController.Get)
+
+			}
+		}
 
 		driverServer.Run()
 

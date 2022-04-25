@@ -10,3 +10,7 @@ func GetDriverService(repository repository.DriverRepository) services.DriverSer
 		Repository: &repository,
 	}
 }
+
+func GetAuthService() services.AuthService {
+	return services.AuthService{}
+}

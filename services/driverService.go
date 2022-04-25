@@ -1,18 +1,15 @@
 package services
 
 import (
+	"log"
 	"root/bodies"
 	"root/models"
+	services "root/services/interfaces"
 	"time"
 )
 
-type DriverRepository interface {
-	Create(driver models.Driver) (models.Driver, error)
-	GetDrivers(page int) ([]models.Driver, error)
-}
-
 type DriverService struct {
-	Repository DriverRepository
+	Repository services.DriverRepository
 }
 
 func (service *DriverService) Create(data bodies.DriverBody) (models.Driver, error) {
@@ -30,4 +27,11 @@ func (service *DriverService) Create(data bodies.DriverBody) (models.Driver, err
 
 func (service *DriverService) GetDrivers(page int) ([]models.Driver, error) {
 	return service.Repository.GetDrivers(page)
+}
+
+func (service *DriverService) GetDriverByEmail(email string) (models.Driver, error) {
+	log.Println(email)
+	driver, err := service.Repository.GetDriverByEmail(email)
+	log.Println(driver.PasswordHash)
+	return driver, err
 }

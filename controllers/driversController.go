@@ -3,19 +3,15 @@ package controllers
 import (
 	"net/http"
 	"root/bodies"
-	"root/models"
+	controllers "root/controllers/interfaces"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-type DriverService interface {
-	Create(data bodies.DriverBody) (models.Driver, error)
-	GetDrivers(page int) ([]models.Driver, error)
-}
-
 type DriverController struct {
-	Service DriverService
+	Service     controllers.DriverService
+	AuthService controllers.AuthService
 }
 
 func (this *DriverController) Get(c *gin.Context) {
@@ -33,6 +29,9 @@ func (this *DriverController) Get(c *gin.Context) {
 func (this *DriverController) Add(c *gin.Context) {
 	var body bodies.DriverBody
 	c.Bind(&body)
+
+	passwordHash, _ := this.AuthService.HashPassword(body.Password)
+	body.Password = passwordHash
 
 	driver, err := this.Service.Create(body)
 
