@@ -4,6 +4,7 @@ import (
 	"log"
 	"root/config"
 	"root/models"
+	"time"
 )
 
 type DriverRepository struct {
@@ -85,4 +86,39 @@ func (_ *DriverRepository) GetDriverByEmail(email string) (models.Driver, error)
 
 	log.Println("Get driver fail", err.Error())
 	return models.Driver{}, err
+}
+
+func (_ *DriverRepository) GetAvailableDrivers() ([]models.Driver, error) {
+	dateNow := time.Now().UTC().Format("2006-01-02")
+	log.Println(dateNow)
+
+	rows, err := config.DB.Query(`
+	SELECT * FROM drivers d
+		WHERE d.Id NOT IN (
+			SELECT t.DriverId FROM trips t
+				WHERE t.DateStart <= $1 AND t.DateEnd >= $1
+		)
+	`, dateNow)
+	drivers := []models.Driver{}
+
+	if err == nil {
+		for rows.Next() {
+			var currentDriver models.Driver
+
+			rows.Scan(
+				&currentDriver.Id,
+				&currentDriver.Fullname,
+				&currentDriver.Email,
+				&currentDriver.PasswordHash,
+				&currentDriver.IsAdmin,
+				&currentDriver.DateCreation,
+			)
+			drivers = append(drivers, currentDriver)
+		}
+
+		return drivers, err
+	}
+
+	log.Println("Get driver fail", err.Error())
+	return []models.Driver{}, err
 }

@@ -1,7 +1,6 @@
 package services
 
 import (
-	"log"
 	"root/bodies"
 	"root/models"
 	services "root/services/interfaces"
@@ -30,8 +29,9 @@ func (service *DriverService) GetDrivers(page int) ([]models.Driver, error) {
 }
 
 func (service *DriverService) GetDriverByEmail(email string) (models.Driver, error) {
-	log.Println(email)
-	driver, err := service.Repository.GetDriverByEmail(email)
-	log.Println(driver.PasswordHash)
-	return driver, err
+	return service.Repository.GetDriverByEmail(email)
+}
+
+func (service *DriverService) GetAvailableDrivers() ([]models.Driver, error) {
+	return service.Repository.GetAvailableDrivers()
 }

@@ -35,7 +35,7 @@ func main() {
 			secured := api.Group("/secured").Use(middlewares.Auth())
 			{
 				secured.GET("/drivers", driverController.Get)
-
+				secured.GET("/drivers/availables", driverController.GetAvailableDrivers)
 			}
 		}
 

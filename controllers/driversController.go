@@ -40,5 +40,14 @@ func (this *DriverController) Add(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, nil)
 	}
+}
 
+func (this *DriverController) GetAvailableDrivers(c *gin.Context) {
+	drivers, err := this.Service.GetAvailableDrivers()
+
+	if err == nil {
+		c.JSON(http.StatusOK, drivers)
+	} else {
+		c.JSON(http.StatusBadRequest, nil)
+	}
 }

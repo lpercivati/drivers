@@ -7,16 +7,17 @@ import (
 )
 
 func Run() {
-	// Migrate drivers
 	migrate(config.DB, Drivers)
-	// Other migrations can be added here.
+	migrate(config.DB, TripsDrop)
+	migrate(config.DB, TripsCreation)
+	migrate(config.DB, TripsMigration)
 }
 func migrate(dbDriver *sql.DB, query string) {
 	statement, err := dbDriver.Prepare(query)
 	if err == nil {
 		_, creationError := statement.Exec()
 		if creationError == nil {
-			log.Println("Table created successfully")
+			log.Println("BD updated OK")
 		} else {
 			log.Println(creationError.Error())
 		}
