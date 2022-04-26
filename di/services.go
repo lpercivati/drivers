@@ -1,11 +1,11 @@
 package di
 
 import (
-	"root/repository"
+	"root/repositories"
 	"root/services"
 )
 
-func GetDriverService(repository repository.DriverRepository) services.DriverService {
+func GetDriverService(repository repositories.DriverRepository) services.DriverService {
 	return services.DriverService{
 		Repository: &repository,
 	}

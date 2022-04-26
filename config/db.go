@@ -9,7 +9,6 @@ import (
 var DB *sql.DB
 
 func InitializeDB() (*sql.DB, error) {
-	// Initialize connection to the database
 	var err error
 	DB, err = sql.Open("sqlite3", "./driversapi.db")
 	return DB, err

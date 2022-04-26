@@ -25,7 +25,7 @@ func (this *DriverController) Get(context *gin.Context) {
 	count, err := strconv.Atoi(context.Query("count"))
 
 	if err != nil {
-		context.JSON(http.StatusBadRequest, nil)
+		context.JSON(http.StatusInternalServerError, nil)
 		return
 	}
 

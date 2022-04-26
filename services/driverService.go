@@ -1,6 +1,7 @@
 package services
 
 import (
+	"log"
 	"root/bodies"
 	"root/models"
 	services "root/services/interfaces"
@@ -21,17 +22,49 @@ func (service *DriverService) Create(data bodies.DriverBody) (models.Driver, err
 		DateCreation: time.Now().UTC(),
 	}
 
-	return service.Repository.Create(driver)
+	driverResponse, err := service.Repository.Create(driver)
+
+	if err != nil {
+		log.Println("Error in driver creation")
+
+		return models.Driver{}, err
+	}
+
+	return driverResponse, err
 }
 
 func (service *DriverService) GetDrivers(page int, count int) ([]models.Driver, error) {
-	return service.Repository.GetDrivers(page, count)
+	drivers, err := service.Repository.GetDrivers(page, count)
+
+	if err != nil {
+		log.Println("Error getting drivers")
+
+		return []models.Driver{}, err
+	}
+
+	return drivers, err
 }
 
 func (service *DriverService) GetDriverByEmail(email string) (models.Driver, error) {
-	return service.Repository.GetDriverByEmail(email)
+	driverResponse, err := service.Repository.GetDriverByEmail(email)
+
+	if err != nil {
+		log.Println("Error getting driver")
+
+		return models.Driver{}, err
+	}
+
+	return driverResponse, err
 }
 
 func (service *DriverService) GetAvailableDrivers() ([]models.Driver, error) {
-	return service.Repository.GetAvailableDrivers()
+	drivers, err := service.Repository.GetAvailableDrivers()
+
+	if err != nil {
+		log.Println("Error getting drivers")
+
+		return []models.Driver{}, err
+	}
+
+	return drivers, err
 }
