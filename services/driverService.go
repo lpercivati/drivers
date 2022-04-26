@@ -24,8 +24,8 @@ func (service *DriverService) Create(data bodies.DriverBody) (models.Driver, err
 	return service.Repository.Create(driver)
 }
 
-func (service *DriverService) GetDrivers(page int) ([]models.Driver, error) {
-	return service.Repository.GetDrivers(page)
+func (service *DriverService) GetDrivers(page int, count int) ([]models.Driver, error) {
+	return service.Repository.GetDrivers(page, count)
 }
 
 func (service *DriverService) GetDriverByEmail(email string) (models.Driver, error) {

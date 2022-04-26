@@ -25,8 +25,8 @@ func (_ *DriverRepository) Create(driver models.Driver) (models.Driver, error) {
 	return models.Driver{}, err
 }
 
-func (_ *DriverRepository) GetDrivers(page int) ([]models.Driver, error) {
-	limit := 5
+func (_ *DriverRepository) GetDrivers(page int, count int) ([]models.Driver, error) {
+	limit := count
 	offset := limit * (page - 1)
 
 	rows, err := config.DB.Query(`

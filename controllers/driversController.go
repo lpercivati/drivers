@@ -14,15 +14,27 @@ type DriverController struct {
 	AuthService controllers.AuthService
 }
 
-func (this *DriverController) Get(c *gin.Context) {
-	page, _ := strconv.Atoi(c.Query("page"))
+func (this *DriverController) Get(context *gin.Context) {
+	page, err := strconv.Atoi(context.Query("page"))
 
-	drivers, err := this.Service.GetDrivers(page)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, nil)
+		return
+	}
+
+	count, err := strconv.Atoi(context.Query("count"))
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, nil)
+		return
+	}
+
+	drivers, err := this.Service.GetDrivers(page, count)
 
 	if err == nil {
-		c.JSON(http.StatusOK, drivers)
+		context.JSON(http.StatusOK, drivers)
 	} else {
-		c.JSON(http.StatusBadRequest, nil)
+		context.JSON(http.StatusBadRequest, nil)
 	}
 }
 
@@ -42,12 +54,12 @@ func (this *DriverController) Add(c *gin.Context) {
 	}
 }
 
-func (this *DriverController) GetAvailableDrivers(c *gin.Context) {
+func (this *DriverController) GetAvailableDrivers(context *gin.Context) {
 	drivers, err := this.Service.GetAvailableDrivers()
 
 	if err == nil {
-		c.JSON(http.StatusOK, drivers)
+		context.JSON(http.StatusOK, drivers)
 	} else {
-		c.JSON(http.StatusBadRequest, nil)
+		context.JSON(http.StatusBadRequest, nil)
 	}
 }
